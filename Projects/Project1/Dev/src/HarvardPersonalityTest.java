@@ -3,11 +3,13 @@ import java.util.regex.*;
 import java.util.Scanner;
 import java.io.*;
 
-public class HarvardPersonalityTest {
 
+public class HarvardPersonalityTest {			/* Program to provide a user the ability to take the Harvard Comprehensive Personality Test, 
+ 												 * calculate their personality type, and view the number of people in each personality type. */
+												 
 	public static void main(String[] args) throws IOException{
 		
-		String welcome = "Welcome to the Harvard Comprehensive Personality Test."+ 
+		String welcome = "Welcome to the Harvard Comprehensive Personality Test."+ 			
 						 "\nDeveloped by David Huson";
 		System.out.println(welcome);
 		
@@ -22,7 +24,7 @@ public class HarvardPersonalityTest {
 					  "\nOption C:\t Add up total for each personality type" + 
 					  "\nOption C:\t Exit Program";
 					  
-		boolean valid;
+		boolean validChoice;
 		
 		do
 		{
@@ -33,64 +35,65 @@ public class HarvardPersonalityTest {
 			
 			if (menuChoice.equalsIgnoreCase("a")) {
 				OptionA();
-				valid = true;
+				validChoice = true;
 				
 			}
 			else if (menuChoice.equalsIgnoreCase("b")) {
 				OptionB();
-				valid = true;
+				validChoice = true;
 				
 			}
 			else if (menuChoice.equalsIgnoreCase("c")) {
 				OptionC();
-				valid = true;
+				validChoice = true;
 				
 			}
 			else if (menuChoice.equalsIgnoreCase("d")) {
 				OptionD();
-				valid = true;
+				validChoice = true;
 				
 			}
 			else {
-				valid = false;
+				validChoice = false;
 			}
 			
-		}while(valid == false);
+		}while(validChoice == false);
 		
 	}//end Menu
 	
-	public static void OptionA() throws IOException{
+	// Administers the Harvard Comprehensive Personality Test, validates their answers, then appends the Unprocessed Test to the UnprocessedTests.txt file
+	public static void OptionA() throws IOException {
 		
-		try {			//Try to open the unprocessedTests.txt file
+		
+		try {
+			String fileName = "UnprocessedTests.txt";			//Define a relative file path for the UnprocessesTests.txt file and save it as filename
+			File tempFile = new File(fileName);	
 			
-			FileWriter outFile = new FileWriter("UnprocessedTests.txt", true);
-			PrintWriter unprocessedTests = new PrintWriter(outFile);
-		}
-		catch (FileNotFoundException e) {			//if the file cannot be found, create a new empty file
-			System.out.println("File Does not exist yet. Must create a new, empty file");
-			PrintWriter unprocessedTests = new PrintWriter("UnprocessedTests.txt");
-		}
-		
-		
-		boolean valid = false;
-		do {
-				
-			String userName = GetName();
+			PrintWriter unprocessedTest = new PrintWriter(tempFile);
 			
-			for (numQuestiion = 1; numQuestion >= 10, numQuestion++)
-				String answer = GetAnswer(numQuestion);
-				
-
-				
+			String name = GetName();
+			unprocessedTest.println(name);
+			
+			for (int questionNum = 1; questionNum <= 10; questionNum++) {
+				String answer = GetAnswer(questionNum);
+				unprocessedTest.println(answer);
 			}
 			
-			
-		}while (valid == false);
+			unprocessedTest.close();
+		}
+		catch(FileNotFoundException errorMsg) {
+			System.out.println("ERROR! Please contact your System Administrator with the following error code:");
+			System.out.println(errorMsg);
+		}
+		finally {
+			Menu();
+		}
+		
 		
 	}//end OptionA
 	
-	public static void OptionB() {
-			
+	public static void OptionB() throws IOException{
+		
 	}//end OptionB
 	
 	public static void OptionC() {
@@ -101,38 +104,58 @@ public class HarvardPersonalityTest {
 		
 	}//end OptionD
 	
-	public static String GetAnswer(int question) {
+	public static String GetAnswer(int question) throws IOException {
 		
-		File testQuestions = new File("Test.txt");
-		Scanner testFile = new Scanner(testQuestions);
+		int offset = question - 2;
+		int lineNum = (5 * offset) + 5;			//equation to calculate the proper line number to start on based on question number while taking into account the file starting  at line = 0 --> f(x) = 5x +5
+		String answer = null;
 		
-		boolean valid;
-		
-		if (question == 1) {
-			do {
-				testFile.nextLine();			/read the test Question
+		try {
+			String fileName = "Dev/Test.txt";
+			FileReader testQuestions = new FileReader(fileName);
+			BufferedReader testReader = new BufferedReader(testQuestions);
+			
+			for (int line = 1; line < lineNum; line++) {			//read and discard all lines before the question the user is on
+				testReader.readLine();
 				
-				
-			}while (valid == false);
+			}//end for
+			
+			for (int flag = 1; flag <= 5; flag++) {				//read the next five lines and display the m to user 
+				String LineReader = testReader.readLine();
+				JOptionPane.showMessageDialog(null, LineReader);
+			}
+			answer = JOptionPane.showInputDialog("\nPlease enter your choice in the box below then press enter.\n"
+					+ "Your choice should be a single alphabetical character from a-d, such as A or a."); 
+
+			testReader.close();
 		}
-	}
+		catch (FileNotFoundException e) {
+			System.out.println(e);
+		}
+		finally {
+			System.exit(0);
+		}
+		return answer;
+	
+	}//end GetAnswer
 		
 	
 	public static String GetName() {
+		
+		boolean valid = false;
 		
 		String fullName;
 		String firstName;
 		String lastName;
 		
-		boolean valid = false;
-		
-		while (valid == false); {
+		do	{
+			
 			firstName = JOptionPane.showInputDialog("Please enter your first name here. Please use only alphabetical charaters, such as: David.");
-			valid = ValidateName(firstName);
+			valid = ValidateInput(firstName, 1);
 			
 			lastName = JOptionPane.showInputDialog("Please enter your last name here. Please use only alphabetical charaters, such as: David.");
-			valid = ValidateName(lastName);
-		}
+			valid = ValidateInput(lastName, 1);
+		}while (valid == false);
 		
 		fullName = (firstName + " " + lastName);
 		
@@ -141,18 +164,34 @@ public class HarvardPersonalityTest {
 	}//end GetName
 
 	
-	public static boolean ValidateName(String name) {
-		boolean valid;
+	public static boolean ValidateInput(String data, int pattern) {
+		boolean valid = false;
 			
-		boolean match = Pattern.matches("[a-zA-Z]", name);
-		if (match == true) {
-			valid = true;
-		}
+		if (pattern == 1) {
+			
+			boolean match = data.matches("[a-zA-Z]");			// create a boolean match object that results to true if the pattern is matched by data
+			
+			if (match == true) {			//if match is true, set valid = true
+				valid = true;
+			}//end if
+			
+			else {			// if match is false, set valid = false
+				valid = false;
+			}//end else
+		}//end if
 		
-		else {
-			valid = false;
-		}
-		
+		else if(pattern == 2) {
+			
+			boolean match = data.matches("[a-dA-D]");
+			
+			if (match == true) {
+				valid = true;
+			}//end if
+			else {
+				valid = false;
+			}//end else
+		}//end else-if
+		 
 		return valid;
 	}
 }//end HarvardPersonalityTest
