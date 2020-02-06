@@ -18,11 +18,16 @@ public class HarvardPersonalityTest {			/* Program to provide a user the ability
 
 	}//end Main
 
+
 	public static void Menu()throws IOException {
+
+	public static void Menu() throws IOException {
+
 
 		String menu = "Option A:\t Append a test" + 
 					  "\nOption B:\t Calculate Personality Type" +
 					  "\nOption C:\t Add up total for each personality type" + 
+
 					  "\nOption D:\t Exit Program";
 
 		boolean validChoice = false;
@@ -32,6 +37,17 @@ public class HarvardPersonalityTest {			/* Program to provide a user the ability
 
 
 			String userInput = JOptionPane.showInputDialog(menu + "\nPlease enter a single letter, either A,B, C, or D to choose an option from the menu.");
+
+					  "\nOption C:\t Exit Program";
+
+		boolean validChoice;
+
+		do
+		{
+			System.out.println(menu);
+
+			String userInput = JOptionPane.showInputDialog("Please enter a single letter, either A,B, C, or D to choose an option from the menu.");
+
 			String menuChoice = userInput;
 
 			if (menuChoice.equalsIgnoreCase("a")) {
@@ -51,7 +67,12 @@ public class HarvardPersonalityTest {			/* Program to provide a user the ability
 			}
 			else if (menuChoice.equalsIgnoreCase("d")) {
 				OptionD();
+
 				return;
+
+				validChoice = true;
+
+
 			}
 			else {
 				validChoice = false;
@@ -59,7 +80,7 @@ public class HarvardPersonalityTest {			/* Program to provide a user the ability
 
 		}while(validChoice == false);
 
-		
+
 		
 	}//end Menu
 
@@ -67,6 +88,13 @@ public class HarvardPersonalityTest {			/* Program to provide a user the ability
 	public static void OptionA() throws IOException {
 		
 		
+
+	}//end Menu
+
+	// Administers the Harvard Comprehensive Personality Test, validates their answers, then appends the Unprocessed Test to the UnprocessedTests.txt file
+	public static void OptionA() throws IOException {
+		
+
 
 		try {
 			String UnprocessedFile = "UnprocessedTests.txt";			//Define a relative file path for the UnprocessesTests.txt file and save it as filename
@@ -79,8 +107,7 @@ public class HarvardPersonalityTest {			/* Program to provide a user the ability
 			File questionFile = new File(testQuestionsPath);			//create a new file object to hold out test data file
 
 			ArrayList<ArrayList<String>> questions = new ArrayList<ArrayList<String>>();
-			
-			
+
 			Scanner testQuestions = new Scanner(questionFile);				//use a scanner object to read the file line by line
 			
 
@@ -108,6 +135,7 @@ public class HarvardPersonalityTest {			/* Program to provide a user the ability
 			
 			for (int questionNum = 1; questionNum <= 10; questionNum++) {
 				int qNum = questionNum - 1;
+
 				
 				message = questions.get(qNum).get(0) + "\n" 
 						+ questions.get(qNum).get(1) + "\n" 
@@ -115,6 +143,15 @@ public class HarvardPersonalityTest {			/* Program to provide a user the ability
 						+ questions.get(qNum).get(3) + "\n"
 						+ questions.get(qNum).get(4);
 				
+
+				
+				message = questions.get(qNum).get(0) + "\n" 
+						+ questions.get(qNum).get(1) + "\n" 
+						+ questions.get(qNum).get(2) + "\n"
+						+ questions.get(qNum).get(3) + "\n"
+						+ questions.get(qNum).get(4);
+				
+
 				answer = GetAnswer(message);
 				unprocessedTest.println(answer);
 			}
@@ -123,11 +160,19 @@ public class HarvardPersonalityTest {			/* Program to provide a user the ability
 			unprocessedTest.close();
 		}
 		catch(FileNotFoundException errorMsg) {
+
 			JOptionPane.showMessageDialog(null, "ERROR! Please contact your System Administrator with the following error code:" + "\n" +errorMsg);
+
+			JOptionPane.showMessageDialog(null, "ERROR! Please contact your System Administrator with the following error code:");
+			JOptionPane.showMessageDialog(null, errorMsg);
+
 		}
 		finally {
 			String repeat = JOptionPane.showInputDialog("Would you like to return to the menu?\n"
 						  							  + "Type Y for yes or N for no.");
+
+
+
 
 			boolean valid = false;
 			
@@ -136,13 +181,18 @@ public class HarvardPersonalityTest {			/* Program to provide a user the ability
 					Menu();
 				}
 				else if (repeat.equalsIgnoreCase("n")) {
+
 					JOptionPane.showMessageDialog(null, "Thank you for trying out our program! GoodBye!");
 					return;
+
+					valid = false;
+
 				}
 				else {
 					valid = false;
 				}
 			}while (valid == false);
+
 		}//end finally
 
 		
@@ -351,6 +401,26 @@ public class HarvardPersonalityTest {			/* Program to provide a user the ability
 
 	}//end OptionD
 	
+
+		}
+
+
+	}//end OptionA
+
+	public static void OptionB() throws IOException{
+
+		
+	}//end OptionB
+
+	public static void OptionC() {
+
+	}//end OptionC
+
+	public static void OptionD() {
+
+	}//end OptionD
+
+
 	public static String GetAnswer(String question) throws IOException {
 
 		String input;
@@ -406,9 +476,15 @@ public class HarvardPersonalityTest {			/* Program to provide a user the ability
 		
 		boolean valid = false;
 		boolean match = false;
+
 		
 		int len = data.length();
 		
+
+		
+		int len = data.length();
+		
+
 		if (len >= 1) {
 			if (key == 1) {
 				
