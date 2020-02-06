@@ -376,3 +376,21 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+*.ini
+*.xml
+Projects/Project1/Dev/.metadata/.lock
+*.version
+Projects/Project1/Dev/.metadata/.mylyn/.taskListIndex/segments_1
+Projects/Project1/Dev/.metadata/.plugins/org.eclipse.ui.intro/introstate
+*.dat
+*.xmi
+*.setup
+*.tree
+*.prefs
+*.lock
+*.index
+*.resources
+Projects/Project1/Dev/.metadata/.plugins/org.eclipse.jdt.core/nonChainingJarsCache
+Projects/Project1/Dev/.metadata/.plugins/org.eclipse.jdt.core/externalFilesCache
+Projects/Project1/Dev/.metadata/.plugins/org.eclipse.jdt.core/assumedExternalFilesCache
+*.txt

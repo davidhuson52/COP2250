@@ -14,23 +14,24 @@ public class HarvardPersonalityTest {			/* Program to provide a user the ability
 		System.out.println(welcome);
 
 		Menu();
+		return;
 
 	}//end Main
 
-	public static void Menu() throws IOException {
+	public static void Menu()throws IOException {
 
 		String menu = "Option A:\t Append a test" + 
 					  "\nOption B:\t Calculate Personality Type" +
 					  "\nOption C:\t Add up total for each personality type" + 
-					  "\nOption C:\t Exit Program";
+					  "\nOption D:\t Exit Program";
 
-		boolean validChoice;
+		boolean validChoice = false;
 
 		do
 		{
-			System.out.println(menu);
 
-			String userInput = JOptionPane.showInputDialog("Please enter a single letter, either A,B, C, or D to choose an option from the menu.");
+
+			String userInput = JOptionPane.showInputDialog(menu + "\nPlease enter a single letter, either A,B, C, or D to choose an option from the menu.");
 			String menuChoice = userInput;
 
 			if (menuChoice.equalsIgnoreCase("a")) {
@@ -50,8 +51,7 @@ public class HarvardPersonalityTest {			/* Program to provide a user the ability
 			}
 			else if (menuChoice.equalsIgnoreCase("d")) {
 				OptionD();
-				validChoice = true;
-
+				return;
 			}
 			else {
 				validChoice = false;
@@ -59,10 +59,13 @@ public class HarvardPersonalityTest {			/* Program to provide a user the ability
 
 		}while(validChoice == false);
 
+		
+		
 	}//end Menu
 
 	// Administers the Harvard Comprehensive Personality Test, validates their answers, then appends the Unprocessed Test to the UnprocessedTests.txt file
 	public static void OptionA() throws IOException {
+		
 		
 
 		try {
@@ -120,12 +123,12 @@ public class HarvardPersonalityTest {			/* Program to provide a user the ability
 			unprocessedTest.close();
 		}
 		catch(FileNotFoundException errorMsg) {
-			JOptionPane.showMessageDialog(null, "ERROR! Please contact your System Administrator with the following error code:");
-			JOptionPane.showMessageDialog(null, errorMsg);
+			JOptionPane.showMessageDialog(null, "ERROR! Please contact your System Administrator with the following error code:" + "\n" +errorMsg);
 		}
 		finally {
 			String repeat = JOptionPane.showInputDialog("Would you like to return to the menu?\n"
 						  							  + "Type Y for yes or N for no.");
+
 			boolean valid = false;
 			
 			do {
@@ -133,39 +136,221 @@ public class HarvardPersonalityTest {			/* Program to provide a user the ability
 					Menu();
 				}
 				else if (repeat.equalsIgnoreCase("n")) {
-					valid = false;
+					JOptionPane.showMessageDialog(null, "Thank you for trying out our program! GoodBye!");
+					return;
 				}
 				else {
 					valid = false;
 				}
 			}while (valid == false);
-		}
+		}//end finally
 
-
+		
 	}//end OptionA
 
 	public static void OptionB() throws IOException{
+		String pathToUnprocessedTest = "UnprocessedTests.txt";
+		String pathToResultsFile = "TestResults.txt";
+		String pType = null;
+		
+		File unprocessedFile = new File(pathToUnprocessedTest);
+		FileWriter appendResultsFile;
+		PrintWriter results = null;
+		
+		Scanner unprocessedData = null;
+		
+		
+		int gradeWeights[][] = { {3, 1, 6, 2},	//Question 1 weights
+			     {2, 1, 3, 4},	//Question 2 weights
+			     {2, 1, 3, 4},	//Question 3 weights
+			     {3, 1, 2, 6},	//Question 4 weights
+			     {1, 2, 5, 3},	//Question 5 weights
+			     {3, 1, 4, 2},	//Question 6 weights
+			     {2, 1, 3, 4},	//Question 7 weights
+			     {4, 3, 2, 5},	//Question 8 weights
+			     {6, 4, 8, 2},	//Question 9 weights
+			     {7, 5, 1, 3} };//Question 10 weights
+		
+		
 		
 		try {
-			String pathToUnprocessedTest = "UnprocessedTests.txt";
-			File unprocessedFile = new File(pathToUnprocessedTest);
-			Scanner unprocessedData = new Scanner(unprocessedFile);
+			unprocessedData = new Scanner(unprocessedFile);
+		}
+		catch (FileNotFoundException errorMsg){
+			JOptionPane.showMessageDialog(null, errorMsg + "\n" + "You must have a test to append from option A.\n"
+														 + "Please return to the menu and complete option A before trying again.");
+			Menu();
+		}
+		
+		
+		try {
+			appendResultsFile = new FileWriter(pathToResultsFile, true);
+			results = new PrintWriter(appendResultsFile);
 			
 		}
 		catch (FileNotFoundException errorMsg) {
+			results = new PrintWriter(pathToResultsFile);
 			
 		}
-		
+		finally {
+			
+			int score = 0;
+			
+			do {
+				
+				
+				String userName = unprocessedData.nextLine();
+				results.println(userName);
+				for (int outerIndex = 0; outerIndex <= 9; outerIndex++) {			//keeps track of the question number
+					
+					String answer = unprocessedData.nextLine();						//holds the answer temporarily for the quesition the loop is on
+					
+					if (answer.equalsIgnoreCase("a")) {
+						score += gradeWeights[outerIndex][0];
+					}
+					else if (answer.equalsIgnoreCase("b")) {
+						score += gradeWeights[outerIndex][1];
+						
+					}
+					else if (answer.equalsIgnoreCase("c")) {
+						score += gradeWeights[outerIndex][2];
+												
+					}
+					else if (answer.equalsIgnoreCase("d")) {
+						score += gradeWeights[outerIndex][3];
+							
+					}		
+	
+				}//end for
+				
+				if (score >= 12 && score <= 20) {
+					pType = "Personality Type 1";
+					
+				}
+				else if (score >= 21 && score <= 31) {
+					pType = "Personality Type 2";
+					
+				}
+				else if (score >= 32 && score <= 42) {
+					pType = "Personality Type 3";
+					
+				}
+				else if (score >= 43 && score <= 53) {
+					pType = "Personality Type 4";
+				}
+				
+				results.println(pType);
+			}while (unprocessedData.hasNext());
+						
+			results.close();
+			unprocessedData.close();
+			
+			PrintWriter clearFile = new PrintWriter(pathToUnprocessedTest);			//the following 2 lines clears the contents of the unprocessed Test file
+			clearFile.close();
+			
+			JOptionPane.showMessageDialog(null, "Done!");
+			
+			String repeat = JOptionPane.showInputDialog("Would you like to return to the menu?\n"
+					  + "Type Y for yes or N for no.");
+
+			boolean valid = false;
+			
+			do {
+				
+			if (repeat.equalsIgnoreCase("y")) {
+				Menu();
+			}
+			else if (repeat.equalsIgnoreCase("n")) {
+				JOptionPane.showMessageDialog(null, "Thank you for trying out our program! GoodBye!");
+				return;
+			}
+			else {
+				valid = false;
+			}
+			
+			}while (valid == false);
+		}//end finally
 	}//end OptionB
 
-	public static void OptionC() {
+	public static void OptionC() throws IOException {
+		
+		String fileName = "TestResults.txt";
+		File resultFile = new File(fileName);
+		Scanner results;
+		String name;
+		String pType;
+		
+		int pType1 = 0;
+		int pType2 = 0;
+		int pType3 = 0;
+		int pType4 = 0;
+		
+		try {
+			results = new Scanner(resultFile);
+			
+			do {
+				
+				results.nextLine();			//skip over name
+				pType = results.nextLine();
+				
+				if (pType.equals("Personality Type 1")) {
+					pType1 += 1;
+				}
+				else if (pType.equals("Personality Type 2")) {
+					pType2 += 1;
+				}
+				else if (pType.equals("Personality Type 3")) {
+					pType3 += 1;
+				}
+				else {
+					pType4 += 1;
+				}
+				
+			}while (results.hasNext());
+			
+		}
+		catch(FileNotFoundException errorMsg){
+			JOptionPane.showMessageDialog(null, errorMsg + "\nThis Option relies on the data gathered in Options A and B. "
+														 + "\nPlease return to the menu and complete options A and B  before trying option C again.");
+			
+		}
+		finally {
+			
+			JOptionPane.showMessageDialog(null, pType1 + "\n" + pType2 + "\n" + pType3 + "\n" + pType4);
+			
+			String repeat = JOptionPane.showInputDialog("Would you like to return to the menu?\n"
+					  + "Type Y for yes or N for no.");
 
+			boolean valid = false;
+			
+			do {
+				
+			if (repeat.equalsIgnoreCase("y")) {
+				Menu();
+			}
+			else if (repeat.equalsIgnoreCase("n")) {
+				JOptionPane.showMessageDialog(null, "Thank you for trying out our program! GoodBye!");
+				return;
+			}
+			else {
+				valid = false;
+			}
+			
+			}while (valid == false);
+			
+
+		}
+	
+		
 	}//end OptionC
 
-	public static void OptionD() {
+	public static void OptionD() throws IOException {
+		
+		JOptionPane.showMessageDialog(null, "Thank you for trying out our program! GoodBye!");
+		return;
 
 	}//end OptionD
-
+	
 	public static String GetAnswer(String question) throws IOException {
 
 		String input;
@@ -212,7 +397,7 @@ public class HarvardPersonalityTest {			/* Program to provide a user the ability
         Stream.of(name.split(" ")).forEach(stringPart -> {
             char[] charArray = stringPart.toLowerCase().toCharArray();
             charArray[0] = Character.toUpperCase(charArray[0]);
-//            resultPlaceHolder.append(new String(charArray)).append(" ");
+            resultPlaceHolder.append(new String(charArray)).append(" ");
         });
         return resultPlaceHolder.toString();
 	}
