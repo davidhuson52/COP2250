@@ -277,7 +277,6 @@ public class HarvardPersonalityTest {			/* Program to provide a user the ability
 		String fileName = "TestResults.txt";
 		File resultFile = new File(fileName);
 		Scanner results;
-		String name;
 		String pType;
 		
 		int pType1 = 0;
@@ -345,6 +344,8 @@ public class HarvardPersonalityTest {			/* Program to provide a user the ability
 	}//end OptionC
 
 	public static void OptionD() throws IOException {
+		JOptionPane.showMessageDialog(null, "Thank you for trying out our program! GoodBye!");
+		return;
 
 	}//end OptionD
 	
