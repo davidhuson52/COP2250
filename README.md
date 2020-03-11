@@ -9,7 +9,7 @@ projectName-MASTER
 
 For each master branch follow this workflow:
 
-1. create a development branch from the project master branch where all developmant will be tracked
+1. create a development branch from the project master branch where all development will be tracked
 3. create a release branch from the development branch where all changes will be confirmed before publishing to master
 4. create a feature branch for each new feature
 5. when a feature is complete it is merged to the develop branch
